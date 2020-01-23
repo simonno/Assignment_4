@@ -62,7 +62,7 @@ def write_predictions(file_name, annotations, predictions):
         for annotation, prediction in zip(annotations, predictions):
             if prediction == 'Work_For':
                 output_file.write(
-                    'sent{0}\t{1}\t{2}\t{3}\t{4}\n'.format(annotation[0], annotation[1], prediction, annotation[2],
+                    'sent{0}\t{1}\t{2}\t{3}\t( {4})\n'.format(annotation[0], annotation[1], prediction, annotation[2],
                                                            annotation[3]))
 
 
