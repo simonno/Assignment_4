@@ -14,8 +14,6 @@ def read_lines(file_name):
         yield sent_id, sent
 
 
-
-
 def main(corpus_file_name):
     for sent_id, sent_str in read_lines(corpus_file_name):
         sent = nlp(sent_str)

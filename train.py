@@ -7,6 +7,8 @@ from sklearn.feature_extraction import DictVectorizer
 from sklearn.linear_model import LogisticRegression
 from sys import argv
 
+from features import get_features
+
 nlp = spacy.load('en_core_web_sm')
 
 
@@ -50,19 +52,6 @@ def parse_annotation(annotations_file_name):
             sent_id = int(sent_id.split('sent')[1])
             annotations[sent_id][(first_ent, second_ent)] = rel
     return annotations
-
-
-def entity_features(entity):
-    return {'type': entity.root.ent_type_, 'root_text': entity.root.text,
-            'root_dep': entity.root.dep_, 'root_head_text': entity.root.head.text}
-
-
-def get_features(first_ent, second_ent):
-    first_ent_features = entity_features(first_ent)
-    second_ent_features = entity_features(second_ent)
-    features = {'1_' + k: v for k, v in first_ent_features.items()}
-    features.update({'2_' + k: v for k, v in second_ent_features.items()})
-    return features
 
 
 def main(corpus_file_name, annotations_file_name):

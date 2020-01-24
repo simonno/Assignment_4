@@ -5,6 +5,8 @@ import spacy
 from scipy import sparse
 from sys import argv
 
+from features import get_features
+
 nlp = spacy.load('en_core_web_sm')
 
 
@@ -35,19 +37,6 @@ def get_prediction(features, clf, feature_map):
     return predict
 
 
-def entity_features(entity):
-    return {'type': entity.root.ent_type_, 'root_text': entity.root.text,
-            'root_dep': entity.root.dep_, 'root_head_text': entity.root.head.text}
-
-
-def get_features(first_ent, second_ent):
-    first_ent_features = entity_features(first_ent)
-    second_ent_features = entity_features(second_ent)
-    features = {'1_' + k: v for k, v in first_ent_features.items()}
-    features.update({'2_' + k: v for k, v in second_ent_features.items()})
-    return features
-
-
 def read_lines(file_name):
     for line in codecs.open(file_name, encoding="utf8"):
         sent_id, sent = line.strip().split("\t")
@@ -63,7 +52,7 @@ def write_predictions(file_name, annotations, predictions):
             if prediction == 'Work_For':
                 output_file.write(
                     'sent{0}\t{1}\t{2}\t{3}\t( {4})\n'.format(annotation[0], annotation[1], prediction, annotation[2],
-                                                           annotation[3]))
+                                                              annotation[3]))
 
 
 def main(corpus_file_name, output_predictions_file):
@@ -77,7 +66,7 @@ def main(corpus_file_name, output_predictions_file):
         print("#text:", sent.text)
         print()
         entities = sent.ents
-        
+
         for i, first_ent in enumerate(entities):
             for second_ent in entities[:i] + entities[i + 1:]:
                 annotations.append((sent_id, str(first_ent), str(second_ent), sent))
