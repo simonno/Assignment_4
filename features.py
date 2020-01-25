@@ -44,6 +44,7 @@ def entity_features(entity):
     features['quote'] = entity.root.is_quote
     features['digit'] = entity.root.is_digit
     # features['cluster'] = entity.root.cluster
+    
     # features['oov'] = entity.root.is_oov
     features.update(neighbors_features(right_tokens, 'r'))
     features.update(neighbors_features(left_tokens, 'l'))
