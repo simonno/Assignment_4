@@ -61,7 +61,7 @@ def entity_features(entity):
 # 're_type': token.right_edge.ent_type_,
 # 're_pos': token.right_edge.pos_,
 # 'prob': token.prob,
-# 'lower': token.lower_,
+# '2_lower': token.lower_,
 # 'shape': token.shape_
 
 
