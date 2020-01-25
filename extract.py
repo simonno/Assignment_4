@@ -42,6 +42,9 @@ def read_lines(file_name):
         sent_id, sent = line.strip().split("\t")
         sent = sent.replace("-LRB-", "(")
         sent = sent.replace("-RRB-", ")")
+        for e in ['province', 'the']:
+            if e in sent:
+                sent = sent.replace(e, '').strip()
         sent_id = int(sent_id.split('sent')[1])
         yield sent_id, sent
 
@@ -56,6 +59,7 @@ def write_predictions(file_name, annotations, predictions):
 
 
 def main(corpus_file_name, output_predictions_file):
+
     clf, vec = read_logistic_regression_model('C:/Users/DELL/PycharmProjects/NLP/Assignment_4/model_file')
     features_map = vec.get_feature_names()
     annotations = list()

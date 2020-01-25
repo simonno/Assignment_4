@@ -22,6 +22,7 @@ def token_feature(token):
         'pos': token.pos_,
         'tag': token.tag_,
         'is_lower': token.is_lower,
+        'iob': token.ent_iob_,
     }
 
 
@@ -39,6 +40,11 @@ def neighbors_features(tokens_list, prefix='', neighbors=1):
 def entity_features(entity):
     left_tokens, right_tokens = get_right_and_left_tokens(entity)
     features = token_feature(entity.root)
+    features['title'] = entity.root.is_title
+    features['quote'] = entity.root.is_quote
+    features['digit'] = entity.root.is_digit
+    # features['cluster'] = entity.root.cluster
+    # features['oov'] = entity.root.is_oov
     features.update(neighbors_features(right_tokens, 'r'))
     features.update(neighbors_features(left_tokens, 'l'))
     return features

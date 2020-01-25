@@ -1,6 +1,7 @@
 import codecs
 import pickle
 from collections import defaultdict
+from random import random
 
 import spacy
 from sklearn.feature_extraction import DictVectorizer
@@ -23,6 +24,9 @@ def read_lines(file_name):
         sent_id, sent = line.strip().split("\t")
         sent = sent.replace("-LRB-", "(")
         sent = sent.replace("-RRB-", ")")
+        for e in ['province', 'the']:
+            if e in sent:
+                sent = sent.replace(e, '').strip()
         sent_id = int(sent_id.split('sent')[1])
         yield sent_id, sent
 
@@ -39,7 +43,7 @@ def create_model(all_features, labels):
     transform_of_features = vec.fit_transform(all_features)
     features_map = vec.get_feature_names()
 
-    clf = LogisticRegression(tol=0.01, solver='saga', multi_class='multinomial').fit(transform_of_features, labels)
+    clf = LogisticRegression(tol=0.001, solver='saga', multi_class='multinomial').fit(transform_of_features, labels)
 
     return transform_of_features, features_map, (clf, vec)
 
@@ -50,6 +54,8 @@ def parse_annotation(annotations_file_name):
         for line in annotations_file:
             sent_id, first_ent, rel, second_ent, sentence = line.strip().split("\t")
             sent_id = int(sent_id.split('sent')[1])
+            if random() < 0.2:
+                rel = "Noise"
             annotations[sent_id][(first_ent, second_ent)] = rel
     return annotations
 
@@ -66,9 +72,9 @@ def main(corpus_file_name, annotations_file_name):
         entities = sent.ents
         for i, first_ent in enumerate(entities):
             for second_ent in entities[:i] + entities[i + 1:]:
-                tupel = (str(first_ent), str(second_ent))
-                if tupel in annotations[sent_id].keys():
-                    rel = annotations[sent_id][tupel]
+                pair_ent = (str(first_ent), str(second_ent))
+                if pair_ent in annotations[sent_id].keys():
+                    rel = annotations[sent_id][pair_ent]
                     vectors_features_list.append(get_features(first_ent, second_ent))
                     labels.append(rel)
 
